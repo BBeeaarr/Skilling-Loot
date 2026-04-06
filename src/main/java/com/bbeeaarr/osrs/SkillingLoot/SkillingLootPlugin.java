@@ -31,9 +31,8 @@ public class SkillingLootPlugin extends Plugin
 	@Inject
 	private EventBus eventBus;
 	private static final Pattern FISHING_CATCH_REGEX = Pattern.compile(
-			"You catch (?:a|an|some) (?<itemText>.+?)[!.]$"
-					+ "|Your cormorant returns with its catch\\.$"
-					+ "|You catch (?<itemText2>.+?) Karambwanji$"
+			"You catch (?:(?:a|an|some)\\s+)?(?:(?<quantityOverride>\\d+)\\s+)?(?<itemText>[^.!?\\r\\n]+)(?:[.!?])?(?:\\s|$)"
+					+ "|Your cormorant returns with its catch\\."
 	);
 	@Inject
 	private Client client;
