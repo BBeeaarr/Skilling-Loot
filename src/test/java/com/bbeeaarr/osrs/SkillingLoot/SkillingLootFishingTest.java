@@ -3,6 +3,7 @@ package com.bbeeaarr.osrs.SkillingLoot;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.gameval.ItemID;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemStack;
 import net.runelite.client.plugins.loottracker.PluginLootReceived;
 import org.junit.Assert;
@@ -11,6 +12,13 @@ import org.junit.Test;
 
 import org.mockito.ArgumentCaptor;
 import net.runelite.client.eventbus.EventBus;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import com.google.inject.testing.fieldbinder.Bind;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.testing.fieldbinder.BoundFieldModule;
+import net.runelite.api.Client;
 
 import java.lang.reflect.Field;
 
@@ -23,26 +31,33 @@ import static org.mockito.Mockito.*;
 
 public class SkillingLootFishingTest
 {
+    @Mock
+    @Bind
+    private EventBus eventBus;
+    @Mock
+    @Bind
+    private ConfigManager configManger;
+
+    @Mock
+    @Bind
+    private SkillingLootConfig config;
+    @Mock
+    @Bind
+    private Client client;
     @Inject
     private SkillingLootPlugin skillingLootPlugin;
-    private EventBus eventBus;
-    private static void setField(Object target, String fieldName, Object value) throws Exception
-    {
-        Field f = target.getClass().getDeclaredField(fieldName);
-        f.setAccessible(true);
-        f.set(target,value);
-    }
-
     @Before
-    public void setUp() throws Exception{
-        skillingLootPlugin = new SkillingLootPlugin();
-        eventBus = mock(EventBus.class);
-        setField(skillingLootPlugin, "eventBus", eventBus);
+    public void setUp() throws Exception
+    {
+        MockitoAnnotations.openMocks(this);
+        Injector injector = Guice.createInjector(BoundFieldModule.of(this));
+        skillingLootPlugin = injector.getInstance(SkillingLootPlugin.class);
     }
 
     @Test
     public void testFishingChatEvents()
     {
+        when(config.trackFish()).thenReturn(true);
         final Map<Integer, String> fishToChatMsg = Map.ofEntries(
                 Map.entry(ItemID.RAW_ANGLERFISH, "You catch an anglerfish."),
                 Map.entry(ItemID.LEATHER_BOOTS, "You catch some boots."),

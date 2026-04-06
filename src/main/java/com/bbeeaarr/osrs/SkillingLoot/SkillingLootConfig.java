@@ -7,13 +7,14 @@ import net.runelite.client.config.ConfigItem;
 @ConfigGroup("SkillingLoot")
 public interface SkillingLootConfig extends Config
 {
+	String CONFIG_GROUP = "skilling loot";
 	@ConfigItem(
-		keyName = "greeting",
-		name = "Welcome Greeting",
-		description = "The message to show to the user when they login"
+		keyName = "trackFish",
+		name = "Track Fish Caught",
+		description = "Posts fish caught as loot to the loot tracker"
 	)
-	default String greeting()
+	default boolean trackFish()
 	{
-		return "Hello";
+		return true;
 	}
 }

@@ -8,6 +8,8 @@ repositories {
 		url = 'https://repo.runelite.net'
 		content {
 			includeGroupByRegex("net\\.runelite.*")
+			includeGroup("com.google.inject")
+			includeGroup("com.google.inject.extensions")
 		}
 	}
 	mavenCentral()
@@ -24,6 +26,8 @@ dependencies {
 
 	testImplementation 'junit:junit:4.12'
 	testImplementation "org.mockito:mockito-core:5.12.0"
+	testImplementation("com.google.inject:guice:4.1.0:no_aop")
+	testImplementation("com.google.inject.extensions:guice-testlib:4.1.0")
 	testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
 	testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
 }

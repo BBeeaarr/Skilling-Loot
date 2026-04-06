@@ -52,15 +52,6 @@ public class SkillingLootPlugin extends Plugin
 		log.debug("Example stopped!");
 	}
 
-	@Subscribe
-	public void onGameStateChanged(GameStateChanged gameStateChanged)
-	{
-		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
-		{
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Example says " + config.greeting(), null);
-		}
-	}
-
 	@Provides
 	SkillingLootConfig provideConfig(ConfigManager configManager)
 	{
@@ -76,26 +67,28 @@ public class SkillingLootPlugin extends Plugin
 		}
 		var message = event.getMessage();
 
-		final Matcher m =  FISHING_CATCH_REGEX.matcher(message);
-		if (m.find())
+		if (config.trackFish())
 		{
-			String itemText = m.group("itemText") != null ? m.group("itemText") : m.group("itemText2");
-			if (itemText == null)
-				return;
-			ChatItemMapping mapping = ChatItemMapping.lookup(itemText);
-			if (mapping == null)
-				return;
+			final Matcher m =  FISHING_CATCH_REGEX.matcher(message);
+			if (m.find())
+			{
+				String itemText = m.group("itemText") != null ? m.group("itemText") : m.group("itemText2");
+				if (itemText == null)
+					return;
+				ChatItemMapping mapping = ChatItemMapping.lookup(itemText);
+				if (mapping == null)
+					return;
 
-			// Advertise the loot
-			var lootEvent = PluginLootReceived.builder()
-					.source(this)
-					.name(mapping.getSkill().getName())
-					.type(LootRecordType.EVENT)
-					.items(Collections.singletonList(new ItemStack(mapping.getItemId(), 1)))
-					.build();
-			eventBus.post(lootEvent);
+				// Advertise the loot
+				var lootEvent = PluginLootReceived.builder()
+						.source(this)
+						.name(mapping.getSkill().getName())
+						.type(LootRecordType.EVENT)
+						.items(Collections.singletonList(new ItemStack(mapping.getItemId(), 1)))
+						.build();
+				eventBus.post(lootEvent);
+			}
 		}
-
 	}
 
 	@Subscribe
