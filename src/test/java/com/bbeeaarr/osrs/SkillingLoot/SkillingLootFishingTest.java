@@ -66,7 +66,7 @@ public class SkillingLootFishingTest
                 Map.entry(ItemID.LEATHER_GLOVES, "You catch some gloves."),
                 Map.entry(ItemID.INFERNAL_EEL, "You catch an infernal eel. It hardens as you handle it with your ice gloves."),
                 Map.entry(ItemID.TBWT_RAW_KARAMBWAN, "You catch a Karambwan!"),
-//                Map.entry(ItemID.TBWT_RAW_KARAMBWANJI, "You catch 16 Karambwanji."),
+                Map.entry(ItemID.TBWT_RAW_KARAMBWANJI, "You catch 16 Karambwanji."),
                 Map.entry(ItemID.RAW_LAVA_EEL, "You catch a lava eel."),
                 Map.entry(ItemID.BRUT_SPAWNING_SALMON, " You catch a leaping salmon."),
                 Map.entry(ItemID.BRUT_STURGEON, "You catch a leaping sturgeon."),
@@ -111,7 +111,10 @@ public class SkillingLootFishingTest
             List<ItemStack> items = new ArrayList<>(loot.getItems());
 
             Assert.assertEquals(e.getKey().intValue(), items.get(0).getId());
-            Assert.assertEquals(1, items.get(0).getQuantity());
+            if (e.getKey().intValue() == ItemID.TBWT_RAW_KARAMBWANJI)
+                Assert.assertEquals(16, items.get(0).getQuantity());
+            else
+                Assert.assertEquals(1 , items.get(0).getQuantity());
         }
     }
 }

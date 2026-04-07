@@ -5,9 +5,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.InteractingChanged;
-import net.runelite.api.gameval.ItemID;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
@@ -72,7 +70,8 @@ public class SkillingLootPlugin extends Plugin
 			final Matcher m =  FISHING_CATCH_REGEX.matcher(message);
 			if (m.find())
 			{
-				String itemText = m.group("itemText") != null ? m.group("itemText") : m.group("itemText2");
+				String itemText = m.group("itemText");
+				Integer itemQuantity = m.group("quantityOverride") != null? Integer.parseInt(m.group("quantityOverride")) : 1;
 				if (itemText == null)
 					return;
 				ChatItemMapping mapping = ChatItemMapping.lookup(itemText);
@@ -84,7 +83,7 @@ public class SkillingLootPlugin extends Plugin
 						.source(this)
 						.name(mapping.getSkill().getName())
 						.type(LootRecordType.EVENT)
-						.items(Collections.singletonList(new ItemStack(mapping.getItemId(), 1)))
+						.items(Collections.singletonList(new ItemStack(mapping.getItemId(), itemQuantity)))
 						.build();
 				eventBus.post(lootEvent);
 			}
