@@ -68,7 +68,7 @@ public class SkillingLootFishingTest
                 Map.entry(ItemID.TBWT_RAW_KARAMBWAN, "You catch a Karambwan!"),
                 Map.entry(ItemID.TBWT_RAW_KARAMBWANJI, "You catch 16 Karambwanji."),
                 Map.entry(ItemID.RAW_LAVA_EEL, "You catch a lava eel."),
-                Map.entry(ItemID.BRUT_SPAWNING_SALMON, " You catch a leaping salmon."),
+                Map.entry(ItemID.BRUT_SPAWNING_SALMON, "You catch a leaping salmon."),
                 Map.entry(ItemID.BRUT_STURGEON, "You catch a leaping sturgeon."),
                 Map.entry(ItemID.BRUT_SPAWNING_TROUT, "You catch a leaping trout."),
                 Map.entry(ItemID.RAW_LOBSTER, "You catch a lobster."),
@@ -76,8 +76,8 @@ public class SkillingLootFishingTest
                 Map.entry(ItemID.OYSTERSHELL, "You catch an oyster shell."),
                 Map.entry(ItemID.RAW_PIKE, "You catch a pike."),
                 Map.entry(ItemID.HUNTING_RAW_FISH_SPECIAL, "You catch a rainbow fish."),
-                Map.entry(ItemID.RAW_ANCHOVIES, " You catch some raw anchovies."),
-                Map.entry(ItemID.RAW_BASS, " You catch a raw bass."),
+                Map.entry(ItemID.RAW_ANCHOVIES, "You catch some raw anchovies."),
+                Map.entry(ItemID.RAW_BASS, "You catch a raw bass."),
                 Map.entry(ItemID.RAW_CATFISH, "You catch a Raw catfish."),
                 Map.entry(ItemID.RAW_CAVEFISH, "You catch a Raw cavefish."),
                 Map.entry(ItemID.RAW_CAVE_EEL, "You catch a raw cave eel."),
@@ -100,6 +100,7 @@ public class SkillingLootFishingTest
         for(Map.Entry<Integer, String> e : fishToChatMsg.entrySet())
         {
             i++;
+            final int itemId = e.getKey().intValue();
             final ChatMessage chatMessage = new ChatMessage(null, ChatMessageType.SPAM, "", e.getValue(), "", 0);
             skillingLootPlugin.onChatMessage(chatMessage);
             ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
@@ -110,8 +111,8 @@ public class SkillingLootFishingTest
             PluginLootReceived loot = (PluginLootReceived) posted;
             List<ItemStack> items = new ArrayList<>(loot.getItems());
 
-            Assert.assertEquals(e.getKey().intValue(), items.get(0).getId());
-            if (e.getKey().intValue() == ItemID.TBWT_RAW_KARAMBWANJI)
+            Assert.assertEquals(itemId, items.get(0).getId());
+            if (itemId == ItemID.TBWT_RAW_KARAMBWANJI)
                 Assert.assertEquals(16, items.get(0).getQuantity());
             else
                 Assert.assertEquals(1 , items.get(0).getQuantity());
