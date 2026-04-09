@@ -95,6 +95,12 @@ public class SkillingLootPlugin extends Plugin
 				Integer itemQuantity = m.group("quantityOverride") != null? Integer.parseInt(m.group("quantityOverride")) : 1;
 				if (itemText == null)
 					return;
+				if (itemText == "clue bottle")
+				{
+					log.debug("clue bottle drop");
+					onInvChange(InventoryID.INV, collectInvItems(LootRecordType.EVENT, "Unsired"), 10);
+					return;
+				}
 				ChatItemMapping mapping = ChatItemMapping.lookup(itemText);
 				if (mapping == null)
 					return;
@@ -115,7 +121,7 @@ public class SkillingLootPlugin extends Plugin
 			{
 				pendingLoot.addBonusBaseItem();
 			}
-			else if(message.contains("clue bottle"))
+			if(message.contains("clue bottle"))
 			{
 				log.debug("clue bottle drop");
 				onInvChange(InventoryID.INV, collectInvItems(LootRecordType.EVENT, "Unsired"), 10);
