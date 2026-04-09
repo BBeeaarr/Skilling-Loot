@@ -1,5 +1,6 @@
 package com.bbeeaarr.osrs.SkillingLoot;
 
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.loottracker.PluginLootReceived;
 import net.runelite.http.api.loottracker.LootRecordType;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 public class SkillingLootAccumulator {
     private final Plugin source;
     private final String name;
@@ -28,6 +30,7 @@ public class SkillingLootAccumulator {
 
     public void addBonusBaseItem()
     {
+        log.debug("Bonus Base Item Added");
         if (base == null)
             throw new IllegalStateException("No base item set");
         baseMultiplier++;
