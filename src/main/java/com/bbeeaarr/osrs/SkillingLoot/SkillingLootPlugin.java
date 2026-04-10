@@ -89,7 +89,12 @@ public class SkillingLootPlugin extends Plugin
 		if (config.trackFish())
 		{
 			final Matcher m =  FISHING_CATCH_REGEX.matcher(message);
-			if (m.find())
+			if(message.contains("clue bottle"))
+			{
+				log.debug("clue bottle drop");
+				onInvChange(InventoryID.INV, collectInvItems(LootRecordType.EVENT, "Unsired"), 10);
+			}
+			else if (m.find())
 			{
 				String itemText = m.group("itemText");
 				Integer itemQuantity = m.group("quantityOverride") != null? Integer.parseInt(m.group("quantityOverride")) : 1;
@@ -121,12 +126,6 @@ public class SkillingLootPlugin extends Plugin
 			{
 				pendingLoot.addBonusBaseItem();
 			}
-			if(message.contains("clue bottle"))
-			{
-				log.debug("clue bottle drop");
-				onInvChange(InventoryID.INV, collectInvItems(LootRecordType.EVENT, "Unsired"), 10);
-			}
-
 		}
 	}
 
@@ -153,8 +152,8 @@ public class SkillingLootPlugin extends Plugin
 		Multiset<Integer> currentInventory = HashMultiset.create();
 		Arrays.stream(inventoryContainer.getItems())
 				.forEach(item -> currentInventory.add(item.getId(), item.getQuantity()));
-		WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
-		final Collection<ItemStack> groundItems = lootManager.getItemSpawns(playerLocation);
+//		WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
+//		final Collection<ItemStack> groundItems = lootManager.getItemSpawns(playerLocation);
 
 		final Multiset<Integer> diff = Multisets.difference(currentInventory, inventorySnapshot);
 		final Multiset<Integer> diffr = Multisets.difference(inventorySnapshot, currentInventory);
@@ -162,11 +161,11 @@ public class SkillingLootPlugin extends Plugin
 		final List<ItemStack> items = diff.entrySet().stream()
 				.map(e -> new ItemStack(e.getElement(), e.getCount()))
 				.collect(Collectors.toList());
-		log.debug("Inv change: {} Ground items: {}", items, groundItems);
+		log.debug("Inv change: {} Ground items: {}", items, items);
 
 		if (inventorySnapshotCb != null)
 		{
-			inventorySnapshotCb.accept(items, groundItems, diffr);
+			inventorySnapshotCb.accept(items, items, diffr);
 		}
 
 		resetEvent();
@@ -231,7 +230,13 @@ public class SkillingLootPlugin extends Plugin
 	{
 		return (invItems, groundItems, removedItems) ->
 		{
-			invItems.forEach(item -> pendingLoot.addBonusOtherItem(item));
+			//here we remove all items added through chat regex as to not double-count them
+			//or we can conditionally add all items that are NOT inside our chat-regex loot object
+			List<ItemStack> pendingLootItems = pendingLoot.buildFinalItemStack();
+			invItems.forEach(item ->
+			{
+				pendingLoot.addBonusOtherItem(item);
+			});
 		};
 	}
 
