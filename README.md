@@ -1,2 +1,2 @@
-# Example
-An example greeter plugin
+# Skilling Loot
+adds skilling loot events to the loot tracker
